@@ -226,41 +226,41 @@ describe('#' + namespace, () => {
 
 
     describe('testAll()', () => {
-        it('****************8ALL- ************* '  , () => {
+        it('****************testAll- ************* '  , () => {
             const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
             
             
             const etf = factory.newResource(namespace, 'ETF', 'HYG');
-            const client = factory.newResource(namespace, 'Client', 'Client_01');               
-            const order = factory.newResource(namespace, 'Order', '01');      
-            const ap = factory.newResource(namespace, 'AP', 'AP_01');
+            const client = factory.newResource(namespace, 'Client', 'Client_011');               
+            const order = factory.newResource(namespace, 'Order', '011');      
+            const ap = factory.newResource(namespace, 'AP', 'AP_011');
             const apAgent = factory.newResource(namespace, 'APAgent', 'APAgent_01');
-            const eTFCustodian = factory.newResource(namespace, 'ETFCustodian', 'ETFCustodian_01');
-            const eTFSponsor = factory.newResource(namespace, 'ETFSponsor', 'ETFSponsor_01');
-            const transferAgent = factory.newResource(namespace, 'TransferAgent', 'TransferAgent_01');
-            const clientCustodian = factory.newResource(namespace, 'ClientCustodian', 'ClientCustodian_01');
+            const eTFCustodian = factory.newResource(namespace, 'ETFCustodian', 'ETFCustodian_011');
+            const eTFSponsor = factory.newResource(namespace, 'ETFSponsor', 'ETFSponsor_011');
+            const transferAgent = factory.newResource(namespace, 'TransferAgent', 'TransferAgent_011');
+            const clientCustodian = factory.newResource(namespace, 'ClientCustodian', 'ClientCustodian_011');
             
             const submitOrder = factory.newTransaction(namespace, 'SubmitOrder');
-            submitOrder.ap = factory.newRelationship(namespace, 'AP', 'AP01');  
-            submitOrder.apAgent =  factory.newRelationship(namespace, 'APAgent', 'AP_AGENT_01');  
+            submitOrder.ap = factory.newRelationship(namespace, 'AP', 'AP011');  
+            submitOrder.apAgent =  factory.newRelationship(namespace, 'APAgent', 'AP_AGENT_011');  
             submitOrder.etfTradingSymbol = 'HYG';
             submitOrder.orderType = 'BUY';
 
 
             const aPAgentVerify = factory.newTransaction(namespace, 'APAgentVerify');
             
-            aPAgentVerify.apAgent =  factory.newRelationship(namespace, 'APAgent', 'AP_AGENT_01');  
+            aPAgentVerify.apAgent =  factory.newRelationship(namespace, 'APAgent', 'AP_AGENT_011');  
             aPAgentVerify.inventoryId = 'id01';
-            aPAgentVerify.eTFCustodian = factory.newRelationship(namespace, 'ETFCustodian', 'ETFCustodian_01');               
+            aPAgentVerify.eTFCustodian = factory.newRelationship(namespace, 'ETFCustodian', 'ETFCustodian_011');               
 
 
 
             const eTFCustodianVerify = factory.newTransaction(namespace, 'ETFCustodianVerify');
             
-            eTFCustodianVerify.eTFSponsor = factory.newRelationship(namespace, 'ETFSponsor', 'ETFSponsor_01');               
+            eTFCustodianVerify.eTFSponsor = factory.newRelationship(namespace, 'ETFSponsor', 'ETFSponsor_011');               
             eTFCustodianVerify.inventoryId = 'id01';
-            eTFCustodianVerify.eTFCustodian = factory.newRelationship(namespace, 'ETFCustodian', 'ETFCustodian_01');               
-            eTFCustodianVerify.transferAgent = factory.newRelationship(namespace, 'TransferAgent', 'TransferAgent_01');               
+            eTFCustodianVerify.eTFCustodian = factory.newRelationship(namespace, 'ETFCustodian', 'ETFCustodian_011');               
+            eTFCustodianVerify.transferAgent = factory.newRelationship(namespace, 'TransferAgent', 'TransferAgent_011');               
 
 
 
@@ -269,6 +269,7 @@ describe('#' + namespace, () => {
             clientCustodianVerify.clientCustodian = factory.newRelationship(namespace, 'ClientCustodian', 'ClientCustodian_01');               
             clientCustodianVerify.inventoryId = 'id01';
 
+            const setupDemo = factory.newTransaction(namespace, 'SetupDemo');
 
 
             let etfRegistry;
@@ -279,6 +280,8 @@ describe('#' + namespace, () => {
             return businessNetworkConnection.getAssetRegistry(namespace + '.ETF').then(registry => {
                 etfRegistry = registry;
                 return etfRegistry.add(etf);
+            }).then(() => {
+                return businessNetworkConnection.submitTransaction(setupDemo);
             }).then(() => {
                 return businessNetworkConnection.getParticipantRegistry(namespace + '.APAgent');
             }).then(registry => {
@@ -354,7 +357,7 @@ describe('#' + namespace, () => {
                 console.log("Step 4 "+ eTFInventory.status);
             });
 
-            clientCustodianVerify
+            //clientCustodianVerify
         });
     });
 

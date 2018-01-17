@@ -7,44 +7,44 @@ namespace org.etfnet
 participant Client identified by clientId {
   o String clientId
   o String clientType optional
-  o String fisrtName optional
+  o String firstName optional
   o String lastName optional
 
 }
 
 participant AP identified by apId {
   o String apId
-  o String fisrtName optional
+  o String firstName optional
   o String lastName optional
 }
 
 participant APAgent identified by agentId {
   o String agentId
-  o String fisrtName optional
+  o String firstName optional
   o String lastName optional
 }
 
 participant TransferAgent identified by agentId {
   o String agentId
-  o String fisrtName optional
+  o String firstName optional
   o String lastName optional
 }
 
 participant ClientCustodian identified by clientCustodianId {
   o String clientCustodianId
-  o String fisrtName optional
+  o String firstName optional
   o String lastName optional
 }
 
 participant ETFCustodian identified by etfCustodianId {
   o String etfCustodianId
-  o String fisrtName optional
+  o String firstName optional
   o String lastName optional
 }
 
 participant ETFSponsor identified by eTFSponsorId {
   o String eTFSponsorId
-  o String fisrtName optional
+  o String firstName optional
   o String lastName optional
 }
 
@@ -122,7 +122,7 @@ transaction ETFCustodianVerify {
 
 transaction ClientCustodianVerify {
   --> ClientCustodian clientCustodian optional  
-  o String inventoryId
+  o String inventoryId optional
 }
 
 transaction SetupDemo {
