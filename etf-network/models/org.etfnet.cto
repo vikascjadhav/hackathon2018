@@ -1,0 +1,61 @@
+/**
+ * Write your model definitions here
+ */
+
+namespace org.etfnet
+
+participant Client identified by clientId {
+  o String clientId
+  o String clientType optional
+  o String fisrtName optional
+  o String lastName optional
+
+}
+
+participant AP identified by apId {
+  o String apId
+  o String fisrtName optional
+  o String lastName optional
+}
+
+participant ClientCustodian identified by clientCustodianId {
+  o String clientCustodianId
+  o String fisrtName optional
+  o String lastName optional
+}
+
+participant ETFCustodian identified by etfCustodianId {
+  o String etfCustodianId
+  o String fisrtName optional
+  o String lastName optional
+}
+
+participant ETFSponsor identified by eTFSponsorId {
+  o String eTFSponsorId
+  o String fisrtName optional
+  o String lastName optional
+}
+
+asset ETF identified by etfTradingSymbol  {
+  o String etfId optional
+  o String etfTradingSymbol
+  o String currency optional
+  o String exchange optional
+  o Double price optional
+  o Double outstandingUnit optional
+}
+
+asset Order identified by orderId {
+  o String orderId
+  o String status optional
+  o ETF etf
+  o Client client
+  o Double qty optional
+  o Double tradingAmount
+  o String tradeType
+  o AP ap optional
+}
+
+transaction PlaceOrder {
+  o Order order
+}
