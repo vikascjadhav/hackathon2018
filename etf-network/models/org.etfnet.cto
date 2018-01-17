@@ -18,6 +18,18 @@ participant AP identified by apId {
   o String lastName optional
 }
 
+participant APAgent identified by agentId {
+  o String agentId
+  o String fisrtName optional
+  o String lastName optional
+}
+
+participant TransferAgent identified by agentId {
+  o String agentId
+  o String fisrtName optional
+  o String lastName optional
+}
+
 participant ClientCustodian identified by clientCustodianId {
   o String clientCustodianId
   o String fisrtName optional
@@ -43,19 +55,76 @@ asset ETF identified by etfTradingSymbol  {
   o String exchange optional
   o Double price optional
   o Double outstandingUnit optional
+  o String createdBy optional
+  o String amendedBy optional
+  
+}
+
+enum Status {
+  
+  o AP_VERIFIED
+  o AP_AGENT_VERIFIED
+  o ETF_CUST_VERIFIED
+  o CLIENT_CUST_VERIFIED
+  o COMPLETED
+
+}
+
+asset ETFInventory identified by inventoryId  {
+  --> ETF etf optional
+  --> AP ap optional
+  --> APAgent apAgent optional
+  --> ETFSponsor etfSponsor optional
+  --> ClientCustodian clientCustodian optional
+  --> ETFCustodian eTFCustodian optional
+  o String inventoryId
+  o String status
+
 }
 
 asset Order identified by orderId {
   o String orderId
-  o String status optional
-  o ETF etf
-  o Client client
-  o Double qty optional
-  o Double tradingAmount
-  o String tradeType
-  o AP ap optional
+  --> ETF etf
 }
 
 transaction PlaceOrder {
-  o Order order
+  
+  o String etfTradingSymbol
+  o String orderType  optional
+  o Double qty optional
+  o String buyer optional
+}
+
+transaction SubmitOrder {
+  --> AP ap optional
+  --> APAgent apAgent optional
+  o String etfTradingSymbol
+  o Double qty optional
+  o String buyer optional
+  o String orderType 
+}
+
+
+transaction APAgentVerify {
+  --> ETFCustodian eTFCustodian optional
+  --> APAgent apAgent optional
+  o String inventoryId
+}
+
+
+
+transaction ETFCustodianVerify {
+  --> ETFCustodian eTFCustodian optional
+  --> ETFSponsor eTFSponsor optional
+  --> TransferAgent transferAgent optional
+  o String inventoryId
+}
+
+transaction ClientCustodianVerify {
+  --> ClientCustodian clientCustodian optional  
+  o String inventoryId
+}
+
+transaction SetupDemo {
+  
 }

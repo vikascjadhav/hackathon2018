@@ -83,56 +83,281 @@ describe('#' + namespace, () => {
         });
     });
 
-    describe('onPlaceOrder()', () => {
+/*    describe('onPlaceOrder()', () => {
         it('Should Place Order with  ' + assetType , () => {
             const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
             
             
-            const etf = factory.newResource(namespace, 'ETF', 'etf1');
-            etf.etfTradingSymbol = 'HYG';
+            const etf = factory.newResource(namespace, 'ETF', 'HYG');
+            //etf.etfTradingSymbol = 'HYG';
             etf.outstandingUnit = 100
-            /*
-            asset ETF identified by etfTradingSymbol  {
-  o String etfId
-  o String etfTradingSymbol
-  o String currency optional
-  o String exchange optional
-  o Double price optional
-  o Double outstandingUnit optional
-}
-            */
             const client = factory.newResource(namespace, 'Client', 'c1');    
            
 
-            const order = factory.newResource(namespace, 'Order', 'o1');
+            const order = factory.newResource(namespace, 'Order', '01');
            
             order.etf = etf;
-            order.client = client;
-            order.qty = 10;
-            order.tradingAmount = 500;
-            order.tradeType = 'Create';
-            order.status = 'Placed'
+            //order.client = client;
+
+          //  order.qty = 10;
+           // order.tradingAmount = 500;
+          //  order.tradeType = 'Create';
+            //order.status = 'Placed'
+            order.etf = factory.newRelationship(namespace, 'ETF', 'HYG');  
+            order.currency = 'EUR'; 
+
             const PlaceOrder = factory.newTransaction(namespace, 'PlaceOrder');
-            PlaceOrder.order = order;     
+            
+
+
+            //PlaceOrder.order = order;  
+           // PlaceOrder.etf =  factory.newRelationship(namespace, 'ETF', 'HYG');   
+           PlaceOrder.etfTradingSymbol = 'HYG';
+             //etfTradingSymbol
             let etfRegistry;
+            let orderRegistry;
+            let clientRegistry;
+            let assetRegistry;
+            let registry;
             return businessNetworkConnection.getAssetRegistry(namespace + '.ETF').then(registry => {
                 etfRegistry = registry;
                 return etfRegistry.add(etf);
             }).then(() => {
                 return businessNetworkConnection.getParticipantRegistry(namespace + '.Client');
-            }).then(clientRegistry => {                
-                return clientRegistry.add(client);
             }).then(() => {
                 // Submit the transaction
+                console.log("Submitting transaction");
                 return businessNetworkConnection.submitTransaction(PlaceOrder);
-            }).then(registry => {
-                // Get the asset
-                return assetRegistry.get(asset.$identifier);
-            }).then(newAsset => {
-                // Assert that the asset has the new value property
-                newAsset.value.should.equal(changeAssetValue.newValue);
-            });
+                console.log("Submitting transaction")
+            }).then(() => {
+                console.log("Completed transaction")
+                etfRegistry = registry;
+            }).then(() => {
+                return businessNetworkConnection.getAssetRegistry(namespace + '.ETF');
+            }).then((registry) => {
+                            // get the listing
+                return registry.get(etf.$identifier);
+            }).then((updateETF) => {
+                            // both offers should have been added to the listing
+                updateETF.currency.should.equal('USD');
+                console.log("Test Completed ");
+                console.log(updateETF);
+            })
         });
     });
 
+
+
+
+
+
+    describe('SubmitOrder()', () => {
+        it('SubmitOrder- Should Place Order with  '  , () => {
+            const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+            
+            
+            const etf = factory.newResource(namespace, 'ETF', 'HYG');
+            //etf.etfTradingSymbol = 'HYG';
+            etf.outstandingUnit = 100
+            const client = factory.newResource(namespace, 'Client', 'c1');    
+           
+
+            const order = factory.newResource(namespace, 'Order', '01');
+      
+            const ap = factory.newResource(namespace, 'AP', 'AP01');
+            const apAgent = factory.newResource(namespace, 'APAgent', 'AP_AGENT_01');
+           
+
+            order.etf = etf;
+            
+            order.etf = factory.newRelationship(namespace, 'ETF', 'HYG');  
+            order.currency = 'EUR'; 
+
+            const submitOrder = factory.newTransaction(namespace, 'SubmitOrder');
+            submitOrder.ap = factory.newRelationship(namespace, 'AP', 'AP01');  
+            submitOrder.apAgent =  factory.newRelationship(namespace, 'APAgent', 'AP_AGENT_01');  
+            submitOrder.etfTradingSymbol = 'HYG';
+            submitOrder.orderType = 'BUY';
+
+             //etfTradingSymbol
+            let etfRegistry;
+            let orderRegistry;
+            let clientRegistry;
+            let assetRegistry;
+            let registry;
+            return businessNetworkConnection.getAssetRegistry(namespace + '.ETF').then(registry => {
+                etfRegistry = registry;
+                return etfRegistry.add(etf);
+            }).then(() => {
+                return businessNetworkConnection.getParticipantRegistry(namespace + '.APAgent');
+            }).then(registry => {
+                registry = registry;
+                return registry.add(apAgent);
+            }).then(() => {
+                return businessNetworkConnection.getParticipantRegistry(namespace + '.AP');
+            }).then(registry => {
+                registry = registry;
+                return registry.add(ap);
+            }).then(() => {
+                return businessNetworkConnection.getParticipantRegistry(namespace + '.Client');
+            }).then(() => {
+                // Submit the transaction
+                console.log("Submitting transaction");
+                return businessNetworkConnection.submitTransaction(submitOrder);
+                console.log("Submitting transaction")
+            }).then(() => {
+                console.log("Completed transaction")
+                etfRegistry = registry;
+            }).then(() => {
+                return businessNetworkConnection.getAssetRegistry(namespace + '.ETFInventory');
+            }).then((registry) => {
+                            // get the listing
+                return registry.get('id01');
+            }).then((eTFInventory) => {
+                            // both offers should have been added to the listing
+                eTFInventory.inventoryId.should.equal('id01');
+                console.log("Test Completed ");
+                console.log(eTFInventory);
+            })
+        });
+    });
+*/
+
+
+
+    describe('testAll()', () => {
+        it('****************8ALL- ************* '  , () => {
+            const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+            
+            
+            const etf = factory.newResource(namespace, 'ETF', 'HYG');
+            const client = factory.newResource(namespace, 'Client', 'Client_01');               
+            const order = factory.newResource(namespace, 'Order', '01');      
+            const ap = factory.newResource(namespace, 'AP', 'AP_01');
+            const apAgent = factory.newResource(namespace, 'APAgent', 'APAgent_01');
+            const eTFCustodian = factory.newResource(namespace, 'ETFCustodian', 'ETFCustodian_01');
+            const eTFSponsor = factory.newResource(namespace, 'ETFSponsor', 'ETFSponsor_01');
+            const transferAgent = factory.newResource(namespace, 'TransferAgent', 'TransferAgent_01');
+            const clientCustodian = factory.newResource(namespace, 'ClientCustodian', 'ClientCustodian_01');
+            
+            const submitOrder = factory.newTransaction(namespace, 'SubmitOrder');
+            submitOrder.ap = factory.newRelationship(namespace, 'AP', 'AP01');  
+            submitOrder.apAgent =  factory.newRelationship(namespace, 'APAgent', 'AP_AGENT_01');  
+            submitOrder.etfTradingSymbol = 'HYG';
+            submitOrder.orderType = 'BUY';
+
+
+            const aPAgentVerify = factory.newTransaction(namespace, 'APAgentVerify');
+            
+            aPAgentVerify.apAgent =  factory.newRelationship(namespace, 'APAgent', 'AP_AGENT_01');  
+            aPAgentVerify.inventoryId = 'id01';
+            aPAgentVerify.eTFCustodian = factory.newRelationship(namespace, 'ETFCustodian', 'ETFCustodian_01');               
+
+
+
+            const eTFCustodianVerify = factory.newTransaction(namespace, 'ETFCustodianVerify');
+            
+            eTFCustodianVerify.eTFSponsor = factory.newRelationship(namespace, 'ETFSponsor', 'ETFSponsor_01');               
+            eTFCustodianVerify.inventoryId = 'id01';
+            eTFCustodianVerify.eTFCustodian = factory.newRelationship(namespace, 'ETFCustodian', 'ETFCustodian_01');               
+            eTFCustodianVerify.transferAgent = factory.newRelationship(namespace, 'TransferAgent', 'TransferAgent_01');               
+
+
+
+            const clientCustodianVerify = factory.newTransaction(namespace, 'ClientCustodianVerify');
+            
+            clientCustodianVerify.clientCustodian = factory.newRelationship(namespace, 'ClientCustodian', 'ClientCustodian_01');               
+            clientCustodianVerify.inventoryId = 'id01';
+
+
+
+            let etfRegistry;
+            let orderRegistry;
+            let clientRegistry;
+            let assetRegistry;
+            let registry;
+            return businessNetworkConnection.getAssetRegistry(namespace + '.ETF').then(registry => {
+                etfRegistry = registry;
+                return etfRegistry.add(etf);
+            }).then(() => {
+                return businessNetworkConnection.getParticipantRegistry(namespace + '.APAgent');
+            }).then(registry => {
+                registry = registry;
+                return registry.add(apAgent);
+            }).then(() => {
+                return businessNetworkConnection.getParticipantRegistry(namespace + '.ETFSponsor');
+            }).then(registry => {
+                registry = registry;
+                return registry.add(eTFSponsor);
+            }).then(() => {
+                return businessNetworkConnection.getParticipantRegistry(namespace + '.TransferAgent');
+            }).then(registry => {
+                registry = registry;
+                return registry.add(transferAgent);
+            }).then(() => {
+                return businessNetworkConnection.getParticipantRegistry(namespace + '.AP');
+            }).then(registry => {
+                registry = registry;
+                return registry.add(ap);
+            }).then(() => {
+                return businessNetworkConnection.getParticipantRegistry(namespace + '.Client');
+            }).then(() => {
+                // Submit the transaction
+                console.log("Submitting transaction");
+                return businessNetworkConnection.submitTransaction(submitOrder);
+                console.log("Submitting transaction")
+            }).then(() => {
+                console.log("Completed transaction")
+                etfRegistry = registry;
+            }).then(() => {
+                return businessNetworkConnection.getAssetRegistry(namespace + '.ETFInventory');
+            }).then((registry) => {
+                            // get the listing
+                return registry.get('id01');
+            }).then((eTFInventory) => {                            
+                eTFInventory.status.should.equal('AP_VERIFIED');
+                console.log("Step 1 "+ eTFInventory.status);                
+                //console.log(eTFInventory);
+            }).then(()=>{
+                console.log("Submitting aPAgentVerify transaction");
+                return businessNetworkConnection.submitTransaction(aPAgentVerify);
+                console.log("Completed aPAgentVerify transaction")
+            }).then(()=>{
+                return businessNetworkConnection.getAssetRegistry(namespace + '.ETFInventory');
+            }).then((registry)=>{                
+                return registry.get('id01');
+            }).then((eTFInventory) => {                            
+                eTFInventory.status.should.equal('AP_AGENT_VERIFIED');                
+                console.log("Step 2 "+ eTFInventory.status);
+                
+            }).then(()=>{
+                console.log("Submitting eTFCustodianVerify transaction");
+                return businessNetworkConnection.submitTransaction(eTFCustodianVerify);
+                console.log("Completed eTFCustodianVerify transaction")
+            }).then(()=>{
+                return businessNetworkConnection.getAssetRegistry(namespace + '.ETFInventory');
+            }).then((registry)=>{                
+                return registry.get('id01');
+            }).then((eTFInventory) => {                            
+                eTFInventory.status.should.equal('ETF_CUST_VERIFIED');                              
+                console.log("Step 3 "+ eTFInventory.status);
+            }).then(()=>{
+                console.log("Submitting eTFCustodianVerify transaction");
+                return businessNetworkConnection.submitTransaction(clientCustodianVerify);
+                console.log("Completed eTFCustodianVerify transaction")
+            }).then(()=>{
+                return businessNetworkConnection.getAssetRegistry(namespace + '.ETFInventory');
+            }).then((registry)=>{                
+                return registry.get('id01');
+            }).then((eTFInventory) => {                            
+                eTFInventory.status.should.equal('COMPLETED');                              
+                console.log("Step 4 "+ eTFInventory.status);
+            });
+
+            clientCustodianVerify
+        });
+    });
+
+
+    
 });
