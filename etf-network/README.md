@@ -1,14 +1,14 @@
 # hackathon2018
 ## ETF Network
 ### Participants
-Client
-AuthorizedParticipant(AP)
-APAgent
-ClientCustodian
-TransferAgent
-ClientCustodian
-ETFCustodian
-ETFSponsor
+1) Client
+2) AuthorizedParticipant(AP)
+3) APAgent
+4) ClientCustodian
+5) TransferAgent
+6) ClientCustodian
+7) ETFCustodian
+8) ETFSponsor
 
 
 ### Assets
@@ -16,11 +16,11 @@ ETFSponsor
 2) ETFInventory
 
 ### Transactions
-SubmitOrder
-APAgentVerify
-ETFCustodianVerify
-ClientCustodianVerify
-SetupDemo
+1) SubmitOrder
+2) APAgentVerify
+3) ETFCustodianVerify
+4) ClientCustodianVerify
+6) SetupDemo
 
 ### Events
 1) confirmReceiptByCustodian
@@ -29,8 +29,8 @@ SetupDemo
 
 
 ### ETF Inventory status will have one of below status
-  o AP_VERIFIED
-  o AP_AGENT_VERIFIED
-  o ETF_CUST_VERIFIED
-  o CLIENT_CUST_VERIFIED
-  o COMPLETED
+1) AP_VERIFIED
+2) AP_AGENT_VERIFIED
+3) ETF_CUST_VERIFIED
+4) CLIENT_CUST_VERIFIED
+5) COMPLETED
