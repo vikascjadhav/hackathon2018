@@ -29,7 +29,6 @@ SetupDemo
 
 
 ### ETF Inventory status will have one of below status
-  
   o AP_VERIFIED
   o AP_AGENT_VERIFIED
   o ETF_CUST_VERIFIED
