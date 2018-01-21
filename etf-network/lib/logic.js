@@ -14,23 +14,34 @@ function SubmitOrder(order) {
     var etfRegistry;
     var ap = order.ap;
     var NS = 'org.etfnet';    
-    /*if(!(order.qty > 0))  {
+    if(!(order.qty > 0))  {
       throw new Error('Please Enter Valid quantity for ETF');      
-    }*/
+    }
     return getAssetRegistry('org.etfnet.ETF').then(function(registry) {
             etfRegistry = registry;
             var factory = getFactory();             
             registry.get(etfTradingSymbol).then(function(etf){  
-
-                    //Math.random().toString(36).substring(7)
-                    var id =  Math.random().toString(36).substring(2, 6) +'#'+ Math.random().toString(36).substring(2, 6)+'#'+Math.random().toString(36).substring(2, 6) +'#'+ Math.random().toString(36).substring(2, 6);
+               var id =  Math.random().toString(36).substring(2, 6) +'#'+ Math.random().toString(36).substring(2, 6)+'#'+Math.random().toString(36).substring(2, 6) +'#'+ Math.random().toString(36).substring(2, 6);
                eTFInventory = factory.newResource(NS, 'ETFInventory',id);
                // eTFInventory = factory.newResource(NS, 'ETFInventory', 'id01');
                 eTFInventory.status = 'AP_VERIFIED';
                 eTFInventory.ap = ap;
                 eTFInventory.qty    = order.qty;
+                eTFInventory.client = order.client;
+                eTFInventory.price = order.price;
+                eTFInventory.netAmount = (order.price * order.qty);
+                eTFInventory.orderType = order.orderType;
+                eTFInventory.tradeDate = order.tradeDate
+                eTFInventory.settlementDate = order.settlementDate;
+                eTFInventory.createdBy = order.createdBy;
                // console.log(ETFInventory);
                 getAssetRegistry('org.etfnet.ETFInventory').then(function(registry1) {
+                     
+                     var event = getFactory().newEvent('org.etfnet', 'APNotifyEvent');
+                      event.inventoryId = id;
+                      event.apAgent = order.apAgent;                      
+                      emit(event);
+
                     return registry1.add(eTFInventory);
                 })
 
@@ -56,7 +67,12 @@ function APAgentVerify(order) {
                   throw new Error('Order is not AP_VERIFIED');
               }
               etfInventory.eTFCustodian = order.eTFCustodian
-              etfInventory.status = 'AP_AGENT_VERIFIED';                    
+              etfInventory.status = 'AP_AGENT_VERIFIED'; 
+               var event = getFactory().newEvent('org.etfnet', 'APAgentNotifyEvent');
+                      event.inventoryId = inventoryId;
+                      event.eTFCustodian = order.eTFCustodian;                      
+                      emit(event);
+                   
               return etfInventoryRegistry.update(etfInventory)
             })                                   
       });   
@@ -81,7 +97,14 @@ function ETFCustodianVerify(order) {
                 }
                 etfInventory.eTFSponsor = order.eTFSponsor
                 etfInventory.transferAgent = order.transferAgent;
-                etfInventory.status = 'ETF_CUST_VERIFIED';            
+                etfInventory.status = 'ETF_CUST_VERIFIED';           
+                    var event = getFactory().newEvent('org.etfnet', 'ETFCustodianNotifyEvent');
+                      event.inventoryId = inventoryId;
+                      event.eTFSponsor = order.eTFSponsor;       
+                      event.clientCustodian = order.clientCustodian;
+                      event.transferAgent = order.transferAgent
+                      emit(event);
+              
                 return etfInventoryRegistry.update(etfInventory)
             })                                   
       });   

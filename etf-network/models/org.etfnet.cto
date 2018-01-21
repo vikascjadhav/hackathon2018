@@ -88,6 +88,9 @@ asset ETFInventory identified by inventoryId  {
   o DateTime amendedDate optional
   o String createdBy optional
   o String amendedBy optional
+  o String tradeDate optional
+  o String settlementDate optional
+  o String orderType  optional
 }
 
 asset Order identified by orderId {
@@ -112,8 +115,8 @@ transaction SubmitOrder {
   o Double price optional
   o String buyer optional
   o String orderType  optional
-  o DateTime tradeDate optional
-  o DateTime settlementDate optional
+  o String tradeDate optional
+  o String settlementDate optional
 
   
 }
@@ -137,6 +140,24 @@ transaction ETFCustodianVerify {
 transaction ClientCustodianVerify {
   --> ClientCustodian clientCustodian optional  
   o String inventoryId optional
+}
+
+
+event APNotifyEvent {
+  --> APAgent apAgent optional
+  o String inventoryId
+}
+
+event APAgentNotifyEvent {
+  --> ETFCustodian eTFCustodian optional
+  o String inventoryId
+}
+
+event ETFCustodianNotifyEvent {
+  --> ClientCustodian clientCustodian optional  
+  --> ETFSponsor eTFSponsor optional
+  --> TransferAgent transferAgent optional
+  o String inventoryId
 }
 
 transaction SetupDemo {

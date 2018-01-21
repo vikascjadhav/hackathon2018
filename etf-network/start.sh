@@ -6,5 +6,6 @@ composer network start --card PeerAdmin@hlfv1 --networkAdmin admin --networkAdmi
 
 
 
-composer-rest-server 
+
+composer-rest-server -c admin@etf-network -n never -w true
 
