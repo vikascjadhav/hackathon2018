@@ -10,6 +10,10 @@ var transact = require('./routes/transact');
 
 var app = express();
 
+
+var Client = require('node-rest-client').Client;
+ 
+var client = new Client();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -24,6 +28,30 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/transact', transact);
+
+
+
+
+app.post('/submitOrder', function(req, res) {
+  console.log(req.body);
+  var args = {
+    data: JSON.stringify(req.body),
+    headers: { "Content-Type": "application/json" }
+  };
+
+  console.log(args)
+  client.post("http://localhost:3000/api/SubmitOrder", args, function (data, response) {    
+    console.log(data);        
+    if(response.statusCode === 200) {
+      res.send('submitOrder successful to ETF BlockChain Network transactionId = '+data.transactionId);
+    } else {
+      res.send('Request Failed');
+    }
+  });
+
+
+  
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

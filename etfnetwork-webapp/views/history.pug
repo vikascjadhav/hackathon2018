@@ -50,31 +50,21 @@ block body
                         h4 Network Status
                         span.text-muted OK
                                  
-                h2.sub-header ETF Inventory / Order Book
+                h2.sub-header ETF Blockchain Transaction History
                 .table-responsive
                 table.table.table-striped
                         thead
                             tr
-                                th #OrderID                                
-                                th Status
-                                th Client
-                                th ETF
-                                th AuthorizedParticipant
-                                th ApAgent                           
-                                th ClientCustodian                                
-                                th ETF Custodian                                
-                                th ETF Sponsor
+                                th #transactionId                                
+                                th transactionType
+                                th transactionTimestamp
+                                th transactionInvoked
+                                th identityUsed                                
                         tbody
                             each val in jsonData
                                 tr
-                                    td #{val.inventoryId}                                    
-                                    td #{val.status}
-                                    td #{val.client}
-                                    td #{val.etf}
-                                    td #{val.ap}
-                                    td #{val.apAgent}
-                                    td #{val.clientCustodian}
-                                    td #{val.eTFCustodian}
-                                    td #{val.eTFSponsor}
-
-
+                                    td #{val.transactionId}                                    
+                                    td #{val.transactionType}
+                                    td #{val.transactionTimestamp}
+                                    td #{val.transactionInvoked}
+                                    td #{val.identityUsed}                                    

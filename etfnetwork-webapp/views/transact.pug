@@ -1,9 +1,19 @@
 extends ../node_modules/pug-bootstrap/layouts/dashboard
+include ./common/common
+
 include ../node_modules/pug-bootstrap/components/dropdowns
 
 
+append styles     
+  link(href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css', 
+  rel='stylesheet')
+  link(href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css')
 
-    
+append scripts
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js') 
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js')   
+
 block body
 
     nav.navbar.navbar-inverse.navbar-fixed-top
@@ -18,7 +28,7 @@ block body
             #navbar.navbar-collapse.collapse
                 ul.nav.navbar-nav.navbar-right
                     li
-                        a(href='/') Dashboard
+                        a(href='http://localhost:4000/') Dashboard
                     li
                         a(href='#') Settings
                     li
@@ -33,25 +43,50 @@ block body
                 ul.nav.nav-sidebar
                     li.active
                         a(href='#')
-                            | Overview
+                            | ETF Book
                             span.sr-only (current)
                     li
                         a(href='/transact') Transact
-                    
+                    li
+                        a(href='/verify') Verify
+                    li
+                        a(href='/history') Blockchain History
+                  
 
             .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.main
                 h1.page-header ETF Booking Platform
         .row 
-            .col-sm-3.col-sm-offset-3.col-md-4.col-md-offset-2.main
-                +dropdown("Select ClientName",[{url:"1", text:"111"}])
-                +input("text","ClientName","Enter Price","price")
-                +input("text","ClientName","Enter quantity","qty")
-                select.selectpicker(data-style='btn-primary', data-live-search='true')
-                    option Mustard
-                    option Ketchup
-                    option Relish    
-                br
-                +checkbox("Check me out")
-                +radio("My Radio Button")
-                +a-btn-primary("#") Submit
+            .col-sm-3.col-sm-offset-3.col-md-3.col-md-offset-2.main 
+                form(action='/submitOrder', method='POST')                    
+                    label(for='client') Client Name:
+                    br                    
+                    +combo("client",clients)
+                    br
+                    br
+                    label(for='orderType') Trade Type:
+                    br                    
+                    +combo("orderType",['BUY','SELL'])
+                    br
+                    br
+                    label Authorized Participant(AP) Name      
+                    br                        
+                    +combo("ap",aps)
+                    br
+                    br
+                    label AP Name      
+                    br                        
+                    +combo("apAgent",apAgents)
+                    br
+                    br
+                    - var options = {"name":"etfTradingSymbol"}                    
+                    +input("text","etfTradingSymbol","Trading Symbol",options)
+                    - var options = {"name":"price"}                    
+                    +input("number","price","Price",options)
+                    - var options = {"name":"qty"}                    
+                    +input("number","qty","Quantity",options)     
+                    - var options = {"name":"tradeDate"}                                             
+                    +input("text","tradeDate","Trade Date",options) 
+                    - var options = {"name":"settlementDate"}                                       
+                    +input("text","settlementDate","Settlment Date ",options)
+                    button.btn.btn-primary(type='submit') Submit Order
                 br                                
