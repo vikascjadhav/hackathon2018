@@ -12,19 +12,26 @@
 function SubmitOrder(order) {
     var etfTradingSymbol = order.etfTradingSymbol;
     var etfRegistry;
-    
-    var NS = 'org.etfnet';
-     return getAssetRegistry('org.etfnet.ETF').then(function(registry) {
+    var ap = order.ap;
+    var NS = 'org.etfnet';    
+    /*if(!(order.qty > 0))  {
+      throw new Error('Please Enter Valid quantity for ETF');      
+    }*/
+    return getAssetRegistry('org.etfnet.ETF').then(function(registry) {
             etfRegistry = registry;
             var factory = getFactory();             
             registry.get(etfTradingSymbol).then(function(etf){  
 
                     //Math.random().toString(36).substring(7)
-                ETFInventory = factory.newResource(NS, 'ETFInventory', 'id01');
-                ETFInventory.status = 'AP_VERIFIED';
+                    var id =  Math.random().toString(36).substring(2, 6) +'#'+ Math.random().toString(36).substring(2, 6)+'#'+Math.random().toString(36).substring(2, 6) +'#'+ Math.random().toString(36).substring(2, 6);
+               eTFInventory = factory.newResource(NS, 'ETFInventory',id);
+               // eTFInventory = factory.newResource(NS, 'ETFInventory', 'id01');
+                eTFInventory.status = 'AP_VERIFIED';
+                eTFInventory.ap = ap;
+                eTFInventory.qty    = order.qty;
                // console.log(ETFInventory);
                 getAssetRegistry('org.etfnet.ETFInventory').then(function(registry1) {
-                    return registry1.add(ETFInventory);
+                    return registry1.add(eTFInventory);
                 })
 
             })                                   
@@ -40,15 +47,17 @@ function SubmitOrder(order) {
 function APAgentVerify(order) {
     var inventoryId = order.inventoryId;
     var etfRegistry;    
-    var NS = 'org.etfnet';
+    var NS = 'org.etfnet';    
      return getAssetRegistry('org.etfnet.ETFInventory').then(function(registry) {
             etfInventoryRegistry = registry;
             var factory = getFactory();             
             registry.get(inventoryId).then(function(etfInventory){  
-
-                etfInventory.status = 'AP_AGENT_VERIFIED';
-                    
-                return etfInventoryRegistry.update(etfInventory)
+              if (etfInventory.status !== 'AP_VERIFIED') {
+                  throw new Error('Order is not AP_VERIFIED');
+              }
+              etfInventory.eTFCustodian = order.eTFCustodian
+              etfInventory.status = 'AP_AGENT_VERIFIED';                    
+              return etfInventoryRegistry.update(etfInventory)
             })                                   
       });   
 }
@@ -67,6 +76,11 @@ function ETFCustodianVerify(order) {
             etfInventoryRegistry = registry;
             var factory = getFactory();                
             registry.get(inventoryId).then(function(etfInventory){  
+                if (etfInventory.status !== 'AP_AGENT_VERIFIED') {
+                    throw new Error('Order is not AP_AGENT_VERIFIED');
+                }
+                etfInventory.eTFSponsor = order.eTFSponsor
+                etfInventory.transferAgent = order.transferAgent;
                 etfInventory.status = 'ETF_CUST_VERIFIED';            
                 return etfInventoryRegistry.update(etfInventory)
             })                                   
@@ -137,6 +151,20 @@ function PlaceOrder(PlaceOrder) {
 function setupDemo(setupDemo) {
     var factory = getFactory();
     var NS = 'org.etfnet';
+    
+    var orders = [
+       factory.newResource(NS, 'ETFInventory', 'OrderId10000'),
+       factory.newResource(NS, 'ETFInventory', 'OrderId10001'),
+       factory.newResource(NS, 'ETFInventory', 'OrderId10002'),
+       factory.newResource(NS, 'ETFInventory', 'OrderId10003'),
+       factory.newResource(NS, 'ETFInventory', 'OrderId10004')
+   ];
+  /* orders[0].status = 'AP_VERIFIED';
+   orders[1].status = 'AP_AGENT_VERIFIED';
+   orders[2].status = 'ETF_CUST_VERIFIED';
+   orders[3].status = 'CLIENT_CUST_VERIFIED';
+   orders[4].status = 'COMPLETED';
+  */   
     var etfs = [
        factory.newResource(NS, 'ETF', 'ETF_01'),
        factory.newResource(NS, 'ETF', 'ETF_02'),
@@ -265,17 +293,31 @@ function setupDemo(setupDemo) {
               return  getAssetRegistry(NS + '.ETF');
            }).then(function(registry){
                 etfs.forEach(function(etf) {          
-                    etfs.etfId = 'VANGARD';
-                    etfs.etfTradingSymbol = '2838-HK';
-                    etfs.currency = 'INR';
-                    etfs.price = 20.11;
-                    etfs.outstandingUnit = 1983464;
-                    etfs.createdBy = 'APAGENT_01';
-                    etfs.amendedBy = 'ClientCustodian_01';  
+                    etf.etfId = 'VANGARD';
+                    etf.etfTradingSymbol = '2838-HK';
+                    etf.currency = 'INR';
+                    etf.price = 20.11;
+                    etf.outstandingUnit = 1983464;
+                    etf.createdBy = 'APAGENT_01';
+                    etf.amendedBy = 'ClientCustodian_01';  
                   });
-                console.log("******* SetupDemo COMPLETED ******");
+                //console.log("******* SetupDemo COMPLETED ******");
                 return registry.addAll(etfs);
+           }).then(function(){            
+              return  getAssetRegistry(NS + '.ETFInventory');
+           }).then(function(registry){
+                orders.forEach(function(order) {          
+                    order.eTFCustodian = eTFCustodians[0]; //factory.newRelationship(NS, 'ETFCustodian', 'ETFCustodian_02');
+                    order.clientCustodian = clientCustodians[0]; //factory.newRelationship(NS, 'ClientCustodian', 'ClientCustodian_02');
+                    order.eTFSponsor =  eTFSponsors[0];//factory.newRelationship(NS, 'ETFSponsor', 'ETFSponsor_02');
+                    order.apAgent = apAgents[0];//factory.newRelationship(NS, 'APAgent', 'APAgent_02');
+                    order.etf = etfs[0];//factory.newRelationship(NS, 'ETF', 'ETF_02');
+                    order.ap = aps[0];//factory.newRelationship(NS, 'AP', 'AP_02');*/
+                    order.client = clients[0]; 
+                    order.status = 'COMPLETED';
+                });
+                console.log("******* SetupDemo COMPLETED ******");
+                return registry.addAll(orders);
            });
-
 
 }

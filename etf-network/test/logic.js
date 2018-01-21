@@ -225,49 +225,49 @@ describe('#' + namespace, () => {
 
 
 
-    describe('testAll()', () => {
-        it('****************testAll- ************* '  , () => {
+    describe('testEtfNetworkFlow()', () => {
+        it('****************testAll Method in ETF Network (Simluation of ETF Lifecycle) ************* '  , () => {
             const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
             
             
             const etf = factory.newResource(namespace, 'ETF', 'HYG');
-            const client = factory.newResource(namespace, 'Client', 'Client_011');               
-            const order = factory.newResource(namespace, 'Order', '011');      
+            const client = factory.newResource(namespace, 'Client', 'CLIENT_01');               
+            
             const ap = factory.newResource(namespace, 'AP', 'AP_011');
             const apAgent = factory.newResource(namespace, 'APAgent', 'APAgent_01');
-            const eTFCustodian = factory.newResource(namespace, 'ETFCustodian', 'ETFCustodian_011');
-            const eTFSponsor = factory.newResource(namespace, 'ETFSponsor', 'ETFSponsor_011');
-            const transferAgent = factory.newResource(namespace, 'TransferAgent', 'TransferAgent_011');
-            const clientCustodian = factory.newResource(namespace, 'ClientCustodian', 'ClientCustodian_011');
+            const eTFCustodian = factory.newResource(namespace, 'ETFCustodian', 'ETFCustodian_01');
+            const eTFSponsor = factory.newResource(namespace, 'ETFSponsor', 'ETFSponsor_01');
+            const transferAgent = factory.newResource(namespace, 'TransferAgent', 'TransferAgent_01');
+            const clientCustodian = factory.newResource(namespace, 'ClientCustodian', 'ClientCustodian_01');
             
             const submitOrder = factory.newTransaction(namespace, 'SubmitOrder');
             submitOrder.ap = factory.newRelationship(namespace, 'AP', 'AP011');  
-            submitOrder.apAgent =  factory.newRelationship(namespace, 'APAgent', 'AP_AGENT_011');  
-            submitOrder.etfTradingSymbol = 'HYG';
+            submitOrder.apAgent =  factory.newRelationship(namespace, 'APAgent', 'AP_AGENT_01');  
+            submitOrder.etfTradingSymbol = 'ETF_01';
             submitOrder.orderType = 'BUY';
-
+            submitOrder.client = factory.newRelationship(namespace, 'Client', 'Client_01');  
 
             const aPAgentVerify = factory.newTransaction(namespace, 'APAgentVerify');
             
-            aPAgentVerify.apAgent =  factory.newRelationship(namespace, 'APAgent', 'AP_AGENT_011');  
-            aPAgentVerify.inventoryId = 'id01';
-            aPAgentVerify.eTFCustodian = factory.newRelationship(namespace, 'ETFCustodian', 'ETFCustodian_011');               
+            aPAgentVerify.apAgent =  factory.newRelationship(namespace, 'APAgent', 'AP_AGENT_01');  
+            
+            aPAgentVerify.eTFCustodian = factory.newRelationship(namespace, 'ETFCustodian', 'ETFCustodian_01');               
 
 
 
             const eTFCustodianVerify = factory.newTransaction(namespace, 'ETFCustodianVerify');
             
-            eTFCustodianVerify.eTFSponsor = factory.newRelationship(namespace, 'ETFSponsor', 'ETFSponsor_011');               
-            eTFCustodianVerify.inventoryId = 'id01';
-            eTFCustodianVerify.eTFCustodian = factory.newRelationship(namespace, 'ETFCustodian', 'ETFCustodian_011');               
-            eTFCustodianVerify.transferAgent = factory.newRelationship(namespace, 'TransferAgent', 'TransferAgent_011');               
+            eTFCustodianVerify.eTFSponsor = factory.newRelationship(namespace, 'ETFSponsor', 'ETFSponsor_01');               
+          
+            eTFCustodianVerify.eTFCustodian = factory.newRelationship(namespace, 'ETFCustodian', 'ETFCustodian_01');               
+            eTFCustodianVerify.transferAgent = factory.newRelationship(namespace, 'TransferAgent', 'TransferAgent_01');               
 
 
-
+            
             const clientCustodianVerify = factory.newTransaction(namespace, 'ClientCustodianVerify');
             
             clientCustodianVerify.clientCustodian = factory.newRelationship(namespace, 'ClientCustodian', 'ClientCustodian_01');               
-            clientCustodianVerify.inventoryId = 'id01';
+            
 
             const setupDemo = factory.newTransaction(namespace, 'SetupDemo');
 
@@ -277,90 +277,74 @@ describe('#' + namespace, () => {
             let clientRegistry;
             let assetRegistry;
             let registry;
-            return businessNetworkConnection.getAssetRegistry(namespace + '.ETF').then(registry => {
-                etfRegistry = registry;
-                return etfRegistry.add(etf);
-            }).then(() => {
-                return businessNetworkConnection.submitTransaction(setupDemo);
-            }).then(() => {
-                return businessNetworkConnection.getParticipantRegistry(namespace + '.APAgent');
-            }).then(registry => {
-                registry = registry;
-                return registry.add(apAgent);
-            }).then(() => {
-                return businessNetworkConnection.getParticipantRegistry(namespace + '.ETFSponsor');
-            }).then(registry => {
-                registry = registry;
-                return registry.add(eTFSponsor);
-            }).then(() => {
-                return businessNetworkConnection.getParticipantRegistry(namespace + '.TransferAgent');
-            }).then(registry => {
-                registry = registry;
-                return registry.add(transferAgent);
-            }).then(() => {
-                return businessNetworkConnection.getParticipantRegistry(namespace + '.AP');
-            }).then(registry => {
-                registry = registry;
-                return registry.add(ap);
-            }).then(() => {
-                return businessNetworkConnection.getParticipantRegistry(namespace + '.Client');
-            }).then(() => {
-                // Submit the transaction
-                console.log("Submitting transaction");
+            let orderId;
+            let status = 'AP_VERIFIED'; 
+            
+            return businessNetworkConnection.submitTransaction(setupDemo).then(() => {
+            
+                console.log("Submitting - submitOrder transaction");
                 return businessNetworkConnection.submitTransaction(submitOrder);
-                console.log("Submitting transaction")
+                
             }).then(() => {
-                console.log("Completed transaction")
+               
                 etfRegistry = registry;
+            }).then(() => {
+            	return businessNetworkConnection.query('selectOrderBookRecordUsingSymbol', {'status':status});
+            	
+            }).then(function(orderRecords){
+            	 if(orderRecords.length>0) {
+            		orderId = orderRecords[0].inventoryId; 	
+            		console.log("Order ID Generated = ",orderId);
+            	 } else {
+            	 	 throw new Error('No Valid Transaction Found after SubmitOrder');
+            	 }
             }).then(() => {
                 return businessNetworkConnection.getAssetRegistry(namespace + '.ETFInventory');
             }).then((registry) => {
                             // get the listing
-                return registry.get('id01');
+                return registry.get(orderId);
             }).then((eTFInventory) => {                            
                 eTFInventory.status.should.equal('AP_VERIFIED');
-                console.log("Step 1 "+ eTFInventory.status);                
+                console.log("Done Step 1) submitOrder Order_Status = "+ eTFInventory.status + " Order_Id = "+orderId);                
                 //console.log(eTFInventory);
             }).then(()=>{
                 console.log("Submitting aPAgentVerify transaction");
+                aPAgentVerify.inventoryId = orderId;
                 return businessNetworkConnection.submitTransaction(aPAgentVerify);
                 console.log("Completed aPAgentVerify transaction")
             }).then(()=>{
                 return businessNetworkConnection.getAssetRegistry(namespace + '.ETFInventory');
             }).then((registry)=>{                
-                return registry.get('id01');
+                return registry.get(orderId);
             }).then((eTFInventory) => {                            
                 eTFInventory.status.should.equal('AP_AGENT_VERIFIED');                
-                console.log("Step 2 "+ eTFInventory.status);
+                console.log("Done Step 2) APAgentVerify Order_Status = "+ eTFInventory.status + " Order_Id = "+orderId);
                 
             }).then(()=>{
                 console.log("Submitting eTFCustodianVerify transaction");
+                 eTFCustodianVerify.inventoryId = orderId;
                 return businessNetworkConnection.submitTransaction(eTFCustodianVerify);
                 console.log("Completed eTFCustodianVerify transaction")
             }).then(()=>{
                 return businessNetworkConnection.getAssetRegistry(namespace + '.ETFInventory');
             }).then((registry)=>{                
-                return registry.get('id01');
+                return registry.get(orderId);
             }).then((eTFInventory) => {                            
                 eTFInventory.status.should.equal('ETF_CUST_VERIFIED');                              
-                console.log("Step 3 "+ eTFInventory.status);
+                console.log("Done Step 3) eTFCustodianVerify Orde _Status = "+ eTFInventory.status + " Order_Id = "+orderId);
             }).then(()=>{
-                console.log("Submitting eTFCustodianVerify transaction");
+                console.log("Submitting clientCustodianVerify transaction");
+                clientCustodianVerify.inventoryId = orderId;
                 return businessNetworkConnection.submitTransaction(clientCustodianVerify);
-                console.log("Completed eTFCustodianVerify transaction")
+                
             }).then(()=>{
                 return businessNetworkConnection.getAssetRegistry(namespace + '.ETFInventory');
             }).then((registry)=>{                
-                return registry.get('id01');
+                return registry.get(orderId);
             }).then((eTFInventory) => {                            
                 eTFInventory.status.should.equal('COMPLETED');                              
-                console.log("Step 4 "+ eTFInventory.status);
-            });
-
-            //clientCustodianVerify
+                console.log("Done Step 4) clientCustodianVerify Order_Status = "+ eTFInventory.status + " Order_Id = "+orderId);
+            });            
         });
     });
-
-
-    
 });

@@ -3,95 +3,74 @@ extends ../node_modules/pug-bootstrap/layouts/dashboard
 
 block body
 
-	nav.navbar.navbar-inverse.navbar-fixed-top
-		.container-fluid
-			.navbar-header
-				button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar', aria-expanded='false', aria-controls='navbar')
-					span.sr-only Toggle navigation
-					span.icon-bar
-					span.icon-bar
-					span.icon-bar
-				a.navbar-brand(href='#') ETF Blockchain Network
-			#navbar.navbar-collapse.collapse
-				ul.nav.navbar-nav.navbar-right
-					li
-						a(href='#') Dashboard
-					li
-						a(href='#') Settings
-					li
-						a(href='#') Profile
-					li
-						a(href='#') Help
-				form.navbar-form.navbar-right
-					input.form-control(type='text', placeholder='Search...')
-	.container-fluid
-		.row
-			.col-sm-3.col-md-2.sidebar
-				ul.nav.nav-sidebar
-					li.active
-						a(href='#')
-							| Overview 
-							span.sr-only (current)
-					li
-						a(href='#') Transact
-					li
-						a(href='#') Analytics
-					
-				
-			.col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.main
-				h1.page-header Dashboard
-				.row.placeholders
-					
-					.col-xs-6.col-sm-9.placeholder
-						img.img-responsive(src='../images/dashboard_green.jpg', alt='Generic placeholder thumbnail')
-						h4 Network Status
-						span.text-muted OK
-				
-				h2.sub-header ETF Inventory / Order Book
-				.table-responsive
-					table.table.table-striped
-						thead
-							tr
-								th #OrderID
-								th ClientId
-								th Status
-								th APID
-								th ClientCustodian
-						tbody
-							tr
-								td 1,001
-								td Lorem
-								td ipsum
-								td dolor
-								td sit
-							tr
-								td 1,002
-								td amet
-								td consectetur
-								td adipiscing
-								td elit
-							tr
-								td 1,003
-								td Integer
-								td nec
-								td odio
-								td Praesent
-							tr
-								td 1,003
-								td libero
-								td Sed
-								td cursus
-								td ante
-							tr
-								td 1,004
-								td dapibus
-								td diam
-								td Sed
-								td nisi
-							tr
-								td 1,005
-								td Nulla
-								td quis
-								td sem
-								td at
-							
+    nav.navbar.navbar-inverse.navbar-fixed-top
+        .container-fluid
+            .navbar-header
+                button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar', aria-expanded='false', aria-controls='navbar')
+                    span.sr-only Toggle navigation
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+                a.navbar-brand(href='#') ETF Blockchain Network
+            #navbar.navbar-collapse.collapse
+                ul.nav.navbar-nav.navbar-right
+                    li
+                        a(href='#') Dashboard
+                    li
+                        a(href='#') Settings
+                    li
+                        a(href='#') Profile
+                    li
+                        a(href='#') Help
+                form.navbar-form.navbar-right
+                    input.form-control(type='text', placeholder='Search...')
+    .container-fluid
+        .row
+            .col-sm-3.col-md-2.sidebar
+                ul.nav.nav-sidebar
+                    li.active
+                        a(href='#')
+                            | Overview
+                            span.sr-only (current)
+                    li
+                        a(href='/transact') Transact
+                    
+                    
+
+            .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.main
+                h1.page-header Dashboard
+                .row.placeholders
+                    
+                    .col-xs-6.col-sm-9.placeholder
+                        img.img-responsive(src='../images/dashboard_green.jpg', alt='Generic placeholder thumbnail')
+                        h4 Network Status
+                        span.text-muted OK
+                                 
+                h2.sub-header ETF Inventory / Order Book
+                .table-responsive
+                table.table.table-striped
+                        thead
+                            tr
+                                th #OrderID                                
+                                th Status
+                                th Client
+                                th ETF
+                                th AuthorizedParticipant
+                                th ApAgent                           
+                                th ClientCustodian                                
+                                th ETF Custodian                                
+                                th ETF Sponsor
+                        tbody
+                            each val in jsonData
+                                tr
+                                    td #{val.inventoryId}                                    
+                                    td #{val.status}
+                                    td #{val.client}
+                                    td #{val.etf}
+                                    td #{val.ap}
+                                    td #{val.apAgent}
+                                    td #{val.clientCustodian}
+                                    td #{val.eTFCustodian}
+                                    td #{val.eTFSponsor}
+
+

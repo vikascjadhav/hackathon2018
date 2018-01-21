@@ -1,0 +1,15 @@
+
+query selectETFUsingSymbol {
+  description: "Select ETF with etfTradingSymbol"
+  statement:
+      SELECT org.etfnet.ETF
+          WHERE (etfTradingSymbol==_$etfTradingSymbol)
+}
+
+
+query selectOrderBookRecordUsingSymbol {
+  description: "Select ETF Order with status"
+  statement:
+      SELECT org.etfnet.ETFInventory
+          WHERE (status==_$status)
+}

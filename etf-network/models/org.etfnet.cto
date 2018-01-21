@@ -74,12 +74,20 @@ asset ETFInventory identified by inventoryId  {
   --> ETF etf optional
   --> AP ap optional
   --> APAgent apAgent optional
-  --> ETFSponsor etfSponsor optional
+  --> ETFSponsor eTFSponsor optional
   --> ClientCustodian clientCustodian optional
   --> ETFCustodian eTFCustodian optional
+  --> TransferAgent transferAgent optional
+  --> Client client optional
   o String inventoryId
   o String status
-
+  o Double qty optional
+  o Double price optional
+  o Double netAmount optional
+  o DateTime createdDate optional
+  o DateTime amendedDate optional
+  o String createdBy optional
+  o String amendedBy optional
 }
 
 asset Order identified by orderId {
@@ -98,10 +106,16 @@ transaction PlaceOrder {
 transaction SubmitOrder {
   --> AP ap optional
   --> APAgent apAgent optional
+  --> Client client optional
   o String etfTradingSymbol
   o Double qty optional
+  o Double price optional
   o String buyer optional
-  o String orderType 
+  o String orderType  optional
+  o DateTime tradeDate optional
+  o DateTime settlementDate optional
+
+  
 }
 
 

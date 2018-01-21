@@ -4,13 +4,7 @@ composer runtime install --card PeerAdmin@hlfv1 --businessNetworkName etf-networ
 
 composer network start --card PeerAdmin@hlfv1 --networkAdmin admin --networkAdminEnrollSecret adminpw --archiveFile etf-network@0.0.1.bna --file networkadmin.card
 
-composer card import --file networkadmin.card
-
-composer network ping --card admin@etf-network
-
-composer-rest-server
 
 
-composer-rest-server -c admin@etf-network -n never -w true
-
+composer-rest-server 
 

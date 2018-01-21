@@ -1,0 +1,6 @@
+append styles     
+  link(href='../css/bootstrap.min.css', rel='stylesheet')
+append scripts
+    script(src='js1.js')
+    script(src='../js/bootstrap.min.js')
+    script(src='../js/jquery.min.js')
