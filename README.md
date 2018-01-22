@@ -6,7 +6,7 @@
 
  ![alt text](https://github.com/vikascjadhav/hackathon2018/blob/master/etfnetwork-webapp/screenshots/testcase.png)
 
- APIS Available through REST interface
+ APIs Available through REST interface
 
  ![alt text](https://github.com/vikascjadhav/hackathon2018/blob/master/etfnetwork-webapp/screenshots/composer_rest_explorer.png)
 
