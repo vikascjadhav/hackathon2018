@@ -30,7 +30,7 @@ block body
                 ul.nav.nav-sidebar
                     li.active
                         a(href='#')
-                            | ETF Book
+                            | ETF Order Book
                             span.sr-only (current)
                     li
                         a(href='/transact') Transact
@@ -59,11 +59,17 @@ block body
                                 th Status
                                 th Client
                                 th ETF
+                                th Quantity
+                                th Price
+                                th NetAmount
+                                th Type
+                                th Trade_Date
+                                th Settlement_Date
                                 th AuthorizedParticipant
                                 th ApAgent                           
                                 th ClientCustodian                                
-                                th ETF Custodian                                
-                                th ETF Sponsor
+                                th ETF_Custodian                                
+                                th Created_By
                         tbody
                             each val in jsonData
                                 tr
@@ -71,10 +77,14 @@ block body
                                     td #{val.status}
                                     td #{val.client}
                                     td #{val.etf}
+                                    td #{val.qty}
+                                    td #{val.price}
+                                    td #{val.netAmount}
+                                    td #{val.orderType}
+                                    td #{val.tradeDate}
+                                    td #{val.settlementDate}
                                     td #{val.ap}
                                     td #{val.apAgent}
                                     td #{val.clientCustodian}
                                     td #{val.eTFCustodian}
-                                    td #{val.eTFSponsor}
-
-
+                                    td #{val.createdBy}

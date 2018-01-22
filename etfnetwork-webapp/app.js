@@ -63,7 +63,7 @@ app.post('/operation', function(req, res) {
   } else if(operation === 'ETFCustodianVerify') {
     inputParam.eTFCustodian = "resource:org.etfnet.ETFCustodian#ETFCustodian_01";
     inputParam.etfSponsor = "resource:org.etfnet.ETFSponsor#ETFSponsor_01";
-    inputParam.transferAgent = "resource:org.etfnet.TransferAgent#HDFC0001";
+    inputParam.transferAgent = "resource:org.etfnet.TransferAgent#TransferAgent_01";
   } else if(operation === 'ClientCustodianVerify') {
     inputParam.clientCustodian =  "resource:org.etfnet.ClientCustodian#ETFCustodian_01";
   }

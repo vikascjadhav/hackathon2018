@@ -9,6 +9,7 @@ router.get('/', function(req, res, next) {
 	client.get("http://localhost:3000/api/ETFInventory", function (data, response) {
     	console.log(response.statusCode);
     	jsonData = data;
+    	console.log(jsonData);
     	//res.render('index', { title: 'ETF Network App1' , jsonData: JSON.stringify(jsonData) });
 		res.render('index', { title: 'ETF Network App' , jsonData: jsonData });    	//res.render('index', { title: 'ETF Network App' , data: 'vikas' });
 	});
