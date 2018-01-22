@@ -16,6 +16,17 @@ router.get('/', function(req, res, next) {
   
 });
 
+router.get('/etf', function(req, res, next) {
+	client.get("http://localhost:3000/api/ETFInventory", function (data, response) {
+    	console.log(response.statusCode);
+    	jsonData = data;
+    	//res.render('index', { title: 'ETF Network App1' , jsonData: JSON.stringify(jsonData) });
+		res.render('index', { title: 'ETF Network App' , jsonData: jsonData });    	//res.render('index', { title: 'ETF Network App' , data: 'vikas' });
+	});
+
+  
+});
+
 router.get('/transact', function(req, res, next) {
 	var clients = [];
 	var aps= [];
@@ -59,9 +70,9 @@ router.get('/history', function(req, res, next) {
   
 });
 
-router.get('/verify', function(req, res, next) {
+router.get('/validate', function(req, res, next) {
 	
-  	res.send('Under Construction');
+  	   res.render('validate', { title: 'ETF Network App' });	    			 		
   	
   
 });

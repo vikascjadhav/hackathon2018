@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var transact = require('./routes/transact');
+var etf = require('./routes/index');
 
 var app = express();
 
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/transact', transact);
+app.use('/etf', transact);
 
 
 
@@ -47,11 +49,45 @@ app.post('/submitOrder', function(req, res) {
     } else {
       res.send('Request Failed');
     }
+  });  
+});
+
+
+app.post('/operation', function(req, res) {
+  console.log(req.body);
+  var operation = req.body.operation;
+  var inputParam = {};
+  if(operation === 'APAgentVerify') {
+    inputParam.inventoryId = req.body.inventoryId;
+    inputParam.eTFCustodian = "resource:org.etfnet.ETFCustodian#ETFCustodian_01";
+  } else if(operation === 'ETFCustodianVerify') {
+    inputParam.eTFCustodian = "resource:org.etfnet.ETFCustodian#ETFCustodian_01";
+    inputParam.etfSponsor = "resource:org.etfnet.ETFSponsor#ETFSponsor_01";
+    inputParam.transferAgent = "resource:org.etfnet.TransferAgent#HDFC0001";
+  } else if(operation === 'ClientCustodianVerify') {
+    inputParam.clientCustodian =  "resource:org.etfnet.ClientCustodian#ETFCustodian_01";
+  }
+  inputParam.inventoryId = req.body.inventoryId
+
+  var args = {
+    data: JSON.stringify(inputParam),
+    headers: { "Content-Type": "application/json" }
+  };
+
+  console.log(args)
+  client.post("http://localhost:3000/api/"+operation, args, function (data, response) {    
+    console.log(data);        
+    if(response.statusCode === 200) {
+      res.send('submitOrder successful to ETF BlockChain Network transactionId = '+data.transactionId);
+    } else {
+      res.send('Request Failed');
+    }
   });
 
 
   
 });
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

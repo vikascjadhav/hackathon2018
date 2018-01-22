@@ -43,13 +43,13 @@ block body
                 ul.nav.nav-sidebar
                     li
                         a(href='/etf')
-                            | ETF Book                            
-                    li.active
-                        a(href='/transact') 
-                            | Transact
-                            span.sr-only (current)
+                            | ETF Order Book                      
                     li
-                        a(href='/validate') Validate
+                        a(href='/transact') Transact
+                    li.active
+                        a(href='/validate') 
+                            | Validate
+                            span.sr-only (current)
                     li
                         a(href='/history') Blockchain History
                   
@@ -58,36 +58,14 @@ block body
                 h1.page-header ETF Booking Platform
         .row 
             .col-sm-3.col-sm-offset-3.col-md-3.col-md-offset-2.main 
-                form(action='/submitOrder', method='POST')                    
-                    label(for='client') Client Name:
+                form(action='/operation', method='POST')                    
+                    label(for='operation') Operation Name:
                     br                    
-                    +combo("client",clients)
+                    +combo("operation",['APAgentVerify','ETFCustodianVerify','ClientCustodianVerify'])
                     br
-                    br
-                    label(for='orderType') Trade Type:
                     br                    
-                    +combo("orderType",['BUY','SELL'])
-                    br
-                    br
-                    label Authorized Participant(AP) Name      
-                    br                        
-                    +combo("ap",aps)
-                    br
-                    br
-                    label AP Agent Name      
-                    br                        
-                    +combo("apAgent",apAgents)
-                    br
-                    br
-                    - var options = {"name":"etfTradingSymbol"}                    
-                    +input("text","etfTradingSymbol","Trading Symbol",options)
-                    - var options = {"name":"price"}                    
-                    +input("number","price","Price",options)
-                    - var options = {"name":"qty"}                    
-                    +input("number","qty","Quantity",options)     
-                    - var options = {"name":"tradeDate"}                                             
-                    +input("text","tradeDate","Trade Date",options) 
-                    - var options = {"name":"settlementDate"}                                       
-                    +input("text","settlementDate","Settlment Date ",options)
+                    - var options = {"name":"inventoryId"}                    
+                    +input("text","inventoryId","Order Id",options) 
+                    +alert-info("Please all other params will be passed with default values")                    
                     button.btn.btn-primary(type='submit') Submit Order
                 br                                
