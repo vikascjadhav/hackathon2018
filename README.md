@@ -12,3 +12,11 @@
 
  ![alt text](https://github.com/vikascjadhav/hackathon2018/blob/master/etfnetwork-webapp/screenshots/transact.png)
 
+
+ Validate
+
+ ![alt text](https://github.com/vikascjadhav/hackathon2018/blob/master/etfnetwork-webapp/screenshots/validate.png)
+
+ History of Blockchain Transactions
+
+ ![alt text](https://github.com/vikascjadhav/hackathon2018/blob/master/etfnetwork-webapp/screenshots/history.png)
