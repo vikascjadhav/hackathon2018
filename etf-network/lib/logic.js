@@ -25,7 +25,9 @@ function SubmitOrder(order) {
                eTFInventory = factory.newResource(NS, 'ETFInventory',id);
                // eTFInventory = factory.newResource(NS, 'ETFInventory', 'id01');
                 eTFInventory.status = 'AP_VERIFIED';
+                eTFInventory.etf = etf;
                 eTFInventory.ap = ap;
+                eTFInventory.apAgent = order.apAgent;
                 eTFInventory.qty    = order.qty;
                 eTFInventory.client = order.client;
                 eTFInventory.price = order.price;
@@ -34,6 +36,7 @@ function SubmitOrder(order) {
                 eTFInventory.tradeDate = order.tradeDate
                 eTFInventory.settlementDate = order.settlementDate;
                 eTFInventory.createdBy = order.createdBy;
+                eTFInventory.createdBy  = order.etfTradingSymbol;
                // console.log(ETFInventory);
                 getAssetRegistry('org.etfnet.ETFInventory').then(function(registry1) {
                      
@@ -97,6 +100,7 @@ function ETFCustodianVerify(order) {
                 }
                 etfInventory.eTFSponsor = order.eTFSponsor
                 etfInventory.transferAgent = order.transferAgent;
+                etfInventory.clientCustodian = order.clientCustodian;
                 etfInventory.status = 'ETF_CUST_VERIFIED';           
                     var event = getFactory().newEvent('org.etfnet', 'ETFCustodianNotifyEvent');
                       event.inventoryId = inventoryId;
@@ -125,7 +129,8 @@ function ClientCustodianVerify(order) {
             etfInventoryRegistry = registry;
             var factory = getFactory();                
             registry.get(inventoryId).then(function(etfInventory){  
-                etfInventory.status = 'COMPLETED';            
+                etfInventory.status = 'COMPLETED'; 
+                etfInventory.clientCustodian = order.clientCustodian;           
                 return etfInventoryRegistry.update(etfInventory)
             })                                   
       });   
@@ -243,16 +248,8 @@ function setupDemo(setupDemo) {
     factory.newResource(NS, 'ETFSponsor', 'ETFSponsor_04')
    ];
     
-      return getParticipantRegistry(NS + '.APAgent')
-           .then(function(APAgentRegistry) {
-                apAgents.forEach(function(apAgent) {          
-                    apAgent.firstName = 'firstName';
-                    apAgent.lastName = 'lastName';
-                  });
-                return APAgentRegistry.addAll(apAgents);                  
-           }).then(function(){
-              return  getParticipantRegistry(NS + '.AP');
-           }).then(function(registry){
+      return getParticipantRegistry(NS + '.AP')
+            .then(function(registry){
                 aps.forEach(function(ap) {          
                     ap.firstName = 'APFirstName';
                     ap.lastName = 'APLastName';
@@ -271,7 +268,7 @@ function setupDemo(setupDemo) {
               return  getParticipantRegistry(NS + '.APAgent');
            }).then(function(registry){
                 apAgents.forEach(function(apAgent) {          
-                    apAgent.agentId = 'BLKRK001';
+                   // apAgent.agentId = 'BLKRK001';
                     apAgent.firstName = 'Blackrock';
                     apAgent.lastName = 'PtvLtd';
                   });
@@ -280,7 +277,7 @@ function setupDemo(setupDemo) {
               return  getParticipantRegistry(NS + '.TransferAgent');
            }).then(function(registry){
                 transferAgents.forEach(function(transferAgent) {          
-                    transferAgent.agentId = 'HDFC0001';
+                    //transferAgent.agentId = 'HDFC0001';
                     transferAgent.firstName = 'HDFC';
                     transferAgent.lastName = 'Limited';
                   });
@@ -289,7 +286,7 @@ function setupDemo(setupDemo) {
               return  getParticipantRegistry(NS + '.ClientCustodian');
            }).then(function(registry){
                 clientCustodians.forEach(function(clientCustodian) {          
-                    clientCustodian.clientCustodianId = 'CSAG';
+                    //clientCustodian.clientCustodianId = 'CSAG';
                     clientCustodian.firstName = 'CreditSuisse';
                     clientCustodian.lastName = 'AG';
                   });
@@ -298,7 +295,7 @@ function setupDemo(setupDemo) {
               return  getParticipantRegistry(NS + '.ETFCustodian');
            }).then(function(registry){
                 eTFCustodians.forEach(function(eTFCustodian) {          
-                    eTFCustodian.etfCustodianId = 'JPMC';
+                    //eTFCustodian.etfCustodianId = 'JPMC';
                     eTFCustodian.firstName = 'JPMorgan';
                     eTFCustodian.lastName = 'ETF Custodian';
                   });
@@ -307,7 +304,7 @@ function setupDemo(setupDemo) {
               return  getParticipantRegistry(NS + '.ETFSponsor');
            }).then(function(registry){
                 eTFSponsors.forEach(function(eTFSponsor) {          
-                    eTFSponsor.eTFSponsorId = 'VANGARD';
+                   // eTFSponsor.eTFSponsorId = 'VANGARD';
                     eTFSponsor.firstName = 'Vanguard';
                     eTFSponsor.lastName = 'Sponsor ETF';
                   });
@@ -316,8 +313,8 @@ function setupDemo(setupDemo) {
               return  getAssetRegistry(NS + '.ETF');
            }).then(function(registry){
                 etfs.forEach(function(etf) {          
-                    etf.etfId = 'VANGARD';
-                    etf.etfTradingSymbol = '2838-HK';
+                   // etf.etfId = 'VANGARD';
+                    //etf.etfTradingSymbol = '2838-HK';
                     etf.currency = 'INR';
                     etf.price = 20.11;
                     etf.outstandingUnit = 1983464;
@@ -338,6 +335,13 @@ function setupDemo(setupDemo) {
                     order.ap = aps[0];//factory.newRelationship(NS, 'AP', 'AP_02');*/
                     order.client = clients[0]; 
                     order.status = 'COMPLETED';
+                    order.qty = 100;
+                    order.price = 44;
+                    order.netAmount = 4400;
+                    order.createdBy = 'CLIENT_01';
+                    order.orderType = 'SELL';
+                    order.tradeDate = '2018-01-15';
+                    order.settlementDate = '2018-01-18';                     
                 });
                 console.log("******* SetupDemo COMPLETED ******");
                 return registry.addAll(orders);

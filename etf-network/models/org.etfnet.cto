@@ -91,6 +91,7 @@ asset ETFInventory identified by inventoryId  {
   o String tradeDate optional
   o String settlementDate optional
   o String orderType  optional
+  o String etfTradingSymbol optional
 }
 
 asset Order identified by orderId {
